@@ -1,0 +1,119 @@
+{
+	"info": {
+		"_postman_id": "c31c95c2-4d90-4436-9900-c7369712959e",
+		"name": "Demo",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Invoices",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/invoices?date=2021-01-01&date=2021-08-01&total=0&total=1000&numberItem=1&numberItem=2&sort=date&sort=item_number&keyword",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices"
+					],
+					"query": [
+						{
+							"key": "date",
+							"value": "2021-01-01"
+						},
+						{
+							"key": "date",
+							"value": "2021-08-01"
+						},
+						{
+							"key": "total",
+							"value": "0"
+						},
+						{
+							"key": "total",
+							"value": "1000"
+						},
+						{
+							"key": "numberItem",
+							"value": "1"
+						},
+						{
+							"key": "numberItem",
+							"value": "2"
+						},
+						{
+							"key": "sort",
+							"value": "date"
+						},
+						{
+							"key": "sort",
+							"value": "item_number"
+						},
+						{
+							"key": "keyword",
+							"value": null
+						},
+						{
+							"key": "pageSize",
+							"value": null,
+							"disabled": true
+						},
+						{
+							"key": "pageNumber",
+							"value": null,
+							"disabled": true
+						}
+					]
+				},
+				"description": "sort is in (total, date, item_number)"
+			},
+			"response": []
+		},
+		{
+			"name": "CreateInvoice",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"total\": 100,\n    \"customer\": \"ACB\",\n    \"date\": \"2021-07-11\",\n    \"note\": \"\",\n    \"items\": [\n        {\n            \"name\": \"HUAD\",\n            \"price\": 2,\n            \"note\": \"\"\n        }\n    ]\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{baseUrl}}/invoices",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "RandomCreate",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{baseUrl}}/invoices/random",
+					"host": [
+						"{{baseUrl}}"
+					],
+					"path": [
+						"invoices",
+						"random"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

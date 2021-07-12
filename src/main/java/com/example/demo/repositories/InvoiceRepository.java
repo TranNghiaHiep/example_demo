@@ -127,7 +127,7 @@ public class InvoiceRepository {
         countQuery.select(builder.count(invoicesRootCount)).where(builder.and(predicates.toArray(new Predicate[predicates.size()])));
         Long count = em.createQuery(countQuery).getSingleResult();
 
-        Page<Invoice> invoicesPage = new PageImpl<>(invoices, pageable == null ? PageRequest.of(0, count.intValue()) : pageable, count);
+        Page<Invoice> invoicesPage = new PageImpl<>(invoices, pageable == null ? PageRequest.of(0, (count.intValue() == 0 ? 10 : count.intValue())) : pageable, count);
         return invoicesPage;
     }
 

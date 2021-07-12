@@ -49,6 +49,9 @@ public class InvoiceRepository {
         Root<Invoice> root = query.from(Invoice.class);
         query.select(root);
         List<Predicate> predicates = new ArrayList<Predicate>();
+        if (keyword != null) {
+            predicates.add(builder.like(root.get("customer"), "%" + keyword + "%"));
+        }
 
         // dateFilter
         if (dateFilter.getMin() != null && dateFilter.getMax() != null) {

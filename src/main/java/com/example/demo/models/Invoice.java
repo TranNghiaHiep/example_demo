@@ -100,7 +100,7 @@ public class Invoice {
 
     public static Invoice random() {
         Invoice invoice = new Invoice();
-        invoice.total = (long) Math.random();
+        invoice.total = RandomHelper.getLong(1, 1000);
         invoice.date = new Date();
         invoice.customer = RandomHelper.getAlphaNumericString(30);
 

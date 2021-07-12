@@ -86,7 +86,7 @@ public class Item {
     public static Item random() {
         Item item = new Item();
         item.name = RandomHelper.getAlphaNumericString(30);
-        item.price = RandomHelper.getLong();
+        item.price = RandomHelper.getLong(1, 10000000);
         
         return item;
     }

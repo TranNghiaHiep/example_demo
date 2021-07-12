@@ -25,8 +25,8 @@ public class RandomHelper {
         return (int) Math.random();
     }
 
-    public static long getLong() {
-        return (long) Math.random();
+    public static long getLong(int min, int max) {
+        return (long) (Math.random() * ((max - min) + 1)) + min;
     }
 
     public static int getNumberic(int from, int to) {

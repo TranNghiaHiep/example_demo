@@ -11,7 +11,7 @@ import com.example.demo.payloads.filters.Filter;
 
 public class Helper {
     public static Filter getDateFilter(List<String> dateList) {
-        if (dateList.size() == 0) {
+        if (dateList == null || dateList.size() == 0) {
             return new Filter();
         }
 
@@ -31,7 +31,7 @@ public class Helper {
     }
 
     public static Filter getLongFilter(List<Long> longList) {
-        if (longList.size() == 0) {
+        if (longList == null || longList.size() == 0) {
             return new Filter();
         }
 
@@ -42,7 +42,7 @@ public class Helper {
     }
 
     public static Filter getIntegerFilter(List<Integer> integerList) {
-        if (integerList.size() == 0) {
+        if (integerList == null || integerList.size() == 0) {
             return new Filter();
         }
 

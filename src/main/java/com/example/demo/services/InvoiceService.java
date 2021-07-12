@@ -11,6 +11,9 @@ import com.example.demo.repositories.InvoiceRepository;
 import com.example.demo.utils.Helper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,7 +21,10 @@ public class InvoiceService {
     @Autowired
     private InvoiceRepository invoiceRepository;
 
-    public List<Invoice> invoices(String keyword,
+    public Page<Invoice> invoices(
+        String keyword,
+        Integer pageNumber,
+        Integer pageSize,
         List<String> sorts,
         List<String> dates,
         List<Long> totals,
@@ -40,19 +46,13 @@ public class InvoiceService {
             }
         });
 
-        return invoiceRepository.getInvoices(keyword, sortColumns, dateFilter, totalFilter, numberItemFilter);
+        Pageable pageable = null;
+        if (pageNumber != null && pageNumber != 0 && pageSize != null && pageSize !=0) {
+            pageable = PageRequest.of(pageNumber, pageSize);
+        }
+
+        return invoiceRepository.getInvoices(keyword, pageable, sortColumns, dateFilter, totalFilter, numberItemFilter);
     }
-
-    // public Pageable invoices(String keyword,
-    //     int pageNumber,
-    //     int pageSize,
-    //     List<String> sorts,
-    //     Filter dateFilter,
-    //     Filter totalFilter,
-    //     Filter numberItemFilter
-    // ) {
-
-    // }
 
     public void save(Invoice entry) {
         invoiceRepository.save(entry);

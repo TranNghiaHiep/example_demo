@@ -9,6 +9,7 @@ import com.example.demo.models.Item;
 import com.example.demo.payloads.requests.InvoiceRequest;
 import com.example.demo.services.InvoiceService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -34,15 +35,8 @@ public class InvoiceController {
         @RequestParam(required = false) Integer pageSize,
         @RequestParam(required = false) Integer pageNumber
     ) {
-        if (pageSize != null && pageSize != 0 && pageNumber != null && pageNumber != 0) {
-            // pagination
-
-            return ResponseEntity.ok().build();
-        } else {
-            // no pagination
-            List<Invoice> invoices = this.invoiceService.invoices(keyword, sorts, dates, totals, numberItems);
-            return ResponseEntity.ok().body(invoices);
-        }
+        Page<Invoice> invoices = this.invoiceService.invoices(keyword, pageNumber, pageSize, sorts, dates, totals, numberItems);
+        return ResponseEntity.ok().body(invoices);
     }
 
     @PostMapping("")

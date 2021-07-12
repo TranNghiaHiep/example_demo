@@ -20,6 +20,10 @@ import com.example.demo.models.Invoice.SortColumn;
 import com.example.demo.payloads.filters.Filter;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,7 +36,9 @@ public class InvoiceRepository {
     @PersistenceContext
     private EntityManager em;
 
-    public List<Invoice> getInvoices(String keyword,
+    public Page<Invoice> getInvoices(
+        String keyword,
+        Pageable pageable,
         Map<SortColumn, String> sorts,
         Filter dateFilter,
         Filter totalFilter,
@@ -41,8 +47,6 @@ public class InvoiceRepository {
         CriteriaBuilder builder = em.getCriteriaBuilder();
         CriteriaQuery<Invoice> query = builder.createQuery(Invoice.class);
         Root<Invoice> root = query.from(Invoice.class);
-        // Join<Invoice, Item> secondTable = root.join("items", JoinType.LEFT);
-        // query
         query.select(root);
         List<Predicate> predicates = new ArrayList<Predicate>();
 
@@ -109,44 +113,23 @@ public class InvoiceRepository {
 
         query.orderBy(orders);
 
-        List<Invoice> invoices = em.createQuery(query).getResultList();
+        List<Invoice> invoices;
 
-        return invoices;
+        if (pageable == null) {
+            invoices = em.createQuery(query).getResultList();
+        } else {
+            invoices = em.createQuery(query).setFirstResult((int) pageable.getOffset()).setMaxResults(pageable.getPageSize()).getResultList();
+        }
+        
+        // Create Count Query
+        CriteriaQuery<Long> countQuery = builder.createQuery(Long.class);
+        Root<Invoice> invoicesRootCount = countQuery.from(Invoice.class);
+        countQuery.select(builder.count(invoicesRootCount)).where(builder.and(predicates.toArray(new Predicate[predicates.size()])));
+        Long count = em.createQuery(countQuery).getSingleResult();
+
+        Page<Invoice> invoicesPage = new PageImpl<>(invoices, pageable == null ? PageRequest.of(0, count.intValue()) : pageable, count);
+        return invoicesPage;
     }
-
-    // public Pageable getInvoices(
-    //     int pageNumber,
-    //     int pageSize,
-    //     String keyword,
-    //     Map<SortColumn, String> sorts,
-    //     Filter dateFilter,
-    //     Filter totalFilter,
-    //     Filter numberItemFilter
-    // ) {
-    //     CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-
-    //     CriteriaQuery<Long> countQuery = criteriaBuilder
-    //     .createQuery(Long.class);
-    //     countQuery.select(criteriaBuilder
-    //     .count(countQuery.from(Invoice.class)));
-
-
-    //     Long count = entityManager.createQuery(countQuery)
-    //     .getSingleResult();
-
-    //     CriteriaQuery<Foo> criteriaQuery = criteriaBuilder
-    //     .createQuery(Foo.class);
-    //     Root<Foo> from = criteriaQuery.from(Foo.class);
-    //     CriteriaQuery<Foo> select = criteriaQuery.select(from);
-
-    //     TypedQuery<Foo> typedQuery = entityManager.createQuery(select);
-    //     while (pageNumber < count.intValue()) {
-    //         typedQuery.setFirstResult(pageNumber - 1);
-    //         typedQuery.setMaxResults(pageSize);
-    //         System.out.println("Current page: " + typedQuery.getResultList());
-    //         pageNumber += pageSize;
-    //     }
-    // }
 
     public void save(Invoice entry) {
         em.persist(entry);
